@@ -1,0 +1,11 @@
+{
+  "spotify": {
+    "clientId": "",
+    "clientSecret": "",
+    "limitResults": 15
+  },
+  "telegram": {
+    "token": "",
+    "message": "This bot can help you find and share music on Spotify. Simply call it up via `@musifybot` in any chat to start!"
+  }
+}
