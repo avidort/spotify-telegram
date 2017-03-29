@@ -18,34 +18,29 @@ const [bluebird, TelegramBot, SpotifyWebApi, config] = [
 
   console.log('[spotify-telegram] Started');
   
-  telegram.on('message', (msg) =>
-    telegram.sendMessage(msg.chat.id, config.telegram.message, {parse_mode: 'markdown'}));
+  telegram
+    .on('message', (msg) => telegram.sendMessage(msg.chat.id, config.telegram.message, {parse_mode: 'markdown'}))
+    .on('inline_query', async (query) => {
+      if (!query.query) {
+        return;
+      }
 
-  telegram.on('inline_query', async (query) => {
-    if (!query.query) {
-      return;
-    }
-
-    try {
-      const search = await spotify.searchTracks(query.query, {limit: config.spotify.limitResults});
-
-      let tracks = [];
-      search.body.tracks.items.forEach((track) => {
-        tracks.push({
-          type: 'article',
-          id: track.id,
-          title: `${track.artists[0].name} - ${track.name}`,
-          description: track.album.name,
-          thumb_url: track.album.images[0].url,
-          input_message_content: {
-            message_text: track.external_urls.spotify
-          }
-        });
-      });
-
-      telegram.answerInlineQuery(query.id, tracks);
-    } catch (e) {
-      console.error('[SpotifyWebApi] %s', e);
-    }
-  });
+      try {
+        const search = await spotify.searchTracks(query.query, {limit: config.spotify.limitResults});
+        telegram.answerInlineQuery(query.id, search.body.tracks.items.map((track) => {
+          return {
+            type: 'article',
+            id: track.id,
+            title: `${track.artists[0].name} - ${track.name}`,
+            description: track.album.name,
+            thumb_url: track.album.images[0].url,
+            input_message_content: {
+              message_text: track.external_urls.spotify
+            }
+          };
+        }));
+      } catch (e) {
+        console.error('[SpotifyWebApi] %s', e);
+      }
+    });
 })();
