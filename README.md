@@ -1,5 +1,6 @@
 # spotify-telegram
-Spotify service bot for Telegram written in `Node.js` as seen live at **@musifybot** on Telegram
+Spotify service bot for Telegram written in `Node.js` as seen live at **@musifybot**.
+It can help users find and share music on Spotify by (@)mentioning it in any chat just as much as the built-in @youtube bot.
 
 ### Installation
 - Simply run `npm install` with **Node.js v7** installed
